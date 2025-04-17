@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WeatherSphere - Modern Weather Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .background-bubbles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+      color: #fff;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .search-box {
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box input {
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      border: none;
+      width: 300px;
+      outline: none;
+    }
+
+    .search-box button {
+      background-color: #ffffff33;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .search-box button:hover {
+      background-color: #ffffff55;
+    }
+
+    .weather-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+
+    .weather-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .main-info {
+      text-align: center;
+    }
+
+    .weather-icon {
+      width: 100px;
+      height: 100px;
+    }
+
+    .temperature {
+      font-size: 2.5rem;
+      margin: 10px 0;
+    }
+
+    .description {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+    .details {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .detail-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      width: 120px;
+    }
+
+    .detail-item h3 {
+      margin: 10px 0 5px;
+      font-size: 0.9rem;
+    }
+
+    .detail-item p {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-bubbles">
+    <div class="bubble" style="width: 100px; height: 100px; top: 20%; left: 10%"></div>
+    <div class="bubble" style="width: 80px; height: 80px; top: 60%; left: 80%"></div>
+    <div class="bubble" style="width: 120px; height: 120px; top: 40%; left: 30%"></div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>WeatherSphere</h1>
+      <p>Discover Your World's Weather in Real-Time</p>
+    </header>
+
+    <div class="search-box">
+      <input type="text" placeholder="Enter city name..." id="cityInput" />
+      <button onclick="getWeather()">
+        <i class="fas fa-search"></i> Search
+      </button>
+      <button onclick="getLocation()">
+        <i class="fas fa-location-crosshairs"></i> My Location
+      </button>
+    </div>
+
+    <div class="weather-card" id="weatherCard">
+      <div class="weather-info">
+        <div class="main-info">
+          <img class="weather-icon" id="weatherIcon" alt="Weather Icon" />
+          <div class="temperature" id="temperature">--</div>
+          <div class="description" id="description">--</div>
+          <h2 id="location">--</h2>
+        </div>
+        <div class="details">
+          <div class="detail-item">
+            <i class="fas fa-tint"></i>
+            <h3>Humidity</h3>
+            <p id="humidity">--%</p>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-wind"></i>
+            <h3>Wind Speed</h3>
+            <p id="windSpeed">-- km/h</p>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-temperature-high"></i>
+            <h3>Feels Like</h3>
+            <p id="feelsLike">--°C</p>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <h3>Pressure</h3>
+            <p id="pressure">-- mb</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const API_KEY = '664f401ebfb34c18b89150224251704'; // Replace with your key if needed
+
+    function showWeatherCard() {
+      document.getElementById('weatherCard').style.display = 'block';
+    }
+
+    function updateWeatherUI(data) {
+      document.getElementById('location').textContent = `${data.location.name}, ${data.location.country}`;
+      document.getElementById('temperature').textContent = `${Math.round(data.current.temp_c)}°C`;
+      document.getElementById('description').textContent = data.current.condition.text;
+      document.getElementById('humidity').textContent = `${data.current.humidity}%`;
+      document.getElementById('windSpeed').textContent = `${data.current.wind_kph} km/h`;
+      document.getElementById('feelsLike').textContent = `${Math.round(data.current.feelslike_c)}°C`;
+      document.getElementById('pressure').textContent = `${data.current.pressure_mb} mb`;
+      document.getElementById('weatherIcon').src = `https:${data.current.condition.icon}`;
+      showWeatherCard();
+    }
+
+    async function getWeather() {
+      const city = document.getElementById('cityInput').value.trim();
+      if (city === '') {
+        alert('Please enter a city name.');
+        return;
+      }
+      try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&aqi=no`);
+        if (!response.ok) throw new Error('City not found.');
+        const data = await response.json();
+        updateWeatherUI(data);
+      } catch (error) {
+        alert('Error fetching weather: ' + error.message);
+      }
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          try {
+            const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${lat},${lon}&aqi=no`);
+            if (!response.ok) throw new Error('Location fetch failed.');
+            const data = await response.json();
+            updateWeatherUI(data);
+          } catch (error) {
+            alert('Error fetching weather: ' + error.message);
+          }
+        }, () => {
+          alert('Geolocation access denied.');
+        });
+      } else {
+        alert('Geolocation not supported by your browser.');
+      }
+    }
+  </script>
+</body>
+</html>
