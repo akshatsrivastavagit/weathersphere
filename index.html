@@ -506,7 +506,7 @@
         const particle = document.createElement('div');
         const size = Math.random() * 3 + 1;
         const duration = Math.random() * 10 + 5;
-        const color = hsl(${Math.random() * 360}, 70%, 70%);
+        const color = `hsl(${Math.random() * 360}, 70%, 70%)`;
         
         particle.style.cssText = `
           position: absolute;
@@ -534,7 +534,7 @@
         const blob = document.createElement('div');
         const size = Math.random() * 200 + 100;
         const duration = Math.random() * 20 + 20;
-        const color = hsl(${Math.random() * 360}, 70%, 80%);
+        const color = `hsl(${Math.random() * 360}, 70%, 80%)`;
         
         blob.style.cssText = `
           position: absolute;
@@ -547,8 +547,8 @@
           animation: blobFloat ${duration}s infinite linear;
         `;
         
-        blob.style.left = ${Math.random() * 100}%;
-        blob.style.top = ${Math.random() * 100}%;
+        blob.style.left = `${Math.random() * 100}%`;
+        blob.style.top = `${Math.random() * 100}%`;
         container.appendChild(blob);
       }
     }
@@ -577,7 +577,7 @@
 
       const [color1, color2, color3] = gradients[Object.keys(gradients).find(key => desc.includes(key))] || ['#f5f7fa', '#c3cfe2', '#d7dfe6'];
       
-      body.style.background = linear-gradient(-45deg, ${color1}, ${color2}, ${color3});
+      body.style.background = `linear-gradient(-45deg, ${color1}, ${color2}, ${color3})`;
       body.style.backgroundSize = '400% 400%';
     }
 
@@ -607,21 +607,21 @@
 
     function updateWeatherUI(data) {
       const conditionText = data.current.condition.text;
-      document.getElementById("location").textContent = ${data.location.name}, ${data.location.country};
-      document.getElementById("temperature").textContent = ${Math.round(data.current.temp_c)}°C;
+      document.getElementById("location").textContent = `${data.location.name}, ${data.location.country}`;
+      document.getElementById("temperature").textContent = `${Math.round(data.current.temp_c)}°C`;
       document.getElementById("description").textContent = conditionText;
-      document.getElementById("humidity").textContent = ${data.current.humidity}%;
-      document.getElementById("windSpeed").textContent = ${data.current.wind_kph} km/h;
-      document.getElementById("visibility").textContent = ${data.current.vis_km} km;
-      document.getElementById("feelsLike").textContent = ${Math.round(data.current.feelslike_c)}°C;
-      document.getElementById("pressure").textContent = ${data.current.pressure_mb} mb;
+      document.getElementById("humidity").textContent = `${data.current.humidity}%`;
+      document.getElementById("windSpeed").textContent = `${data.current.wind_kph} km/h`;
+      document.getElementById("visibility").textContent = `${data.current.vis_km} km`;
+      document.getElementById("feelsLike").textContent = `${Math.round(data.current.feelslike_c)}°C`;
+      document.getElementById("pressure").textContent = `${data.current.pressure_mb} mb`;
 
       if(data.current.air_quality && data.current.air_quality['us-epa-index']) {
         const aqi = data.current.air_quality['us-epa-index'];
         const aqiCategory = getAQICategory(aqi);
-        document.getElementById("aqi").textContent = ${aqiCategory.level} (AQI ${aqi});
+        document.getElementById("aqi").textContent = `${aqiCategory.level} (AQI ${aqi})`;
         const aqiProgress = document.getElementById("aqiProgress");
-        aqiProgress.style.width = ${Math.min((aqi/300)*100, 100)}%;
+        aqiProgress.style.width = `${Math.min((aqi/300)*100, 100)}%`;
         aqiProgress.style.backgroundColor = aqiCategory.color;
       } else {
         document.getElementById("aqi").textContent = "Data unavailable";
@@ -630,7 +630,7 @@
       document.getElementById("weatherOverview").textContent = getWeatherOverview(conditionText);
 
       const weatherIcon = document.getElementById("weatherIcon");
-      weatherIcon.src = https:${data.current.condition.icon};
+      weatherIcon.src = `https:${data.current.condition.icon}`;
 
       setBackground(conditionText);
       showWeatherCard();
@@ -686,7 +686,7 @@
     function getWeather() {
       const city = document.getElementById("cityInput").value.trim();
       if (!city) return showError("Please enter a city name.");
-      fetch(https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${city}&days=6&aqi=yes)
+      fetch(`https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${city}&days=6&aqi=yes`)
         .then(response => response.json())
         .then(data => {
           updateWeatherUI(data);
@@ -699,7 +699,7 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           const { latitude, longitude } = position.coords;
-          fetch(https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${latitude},${longitude}&days=6&aqi=yes)
+          fetch(`https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${latitude},${longitude}&days=6&aqi=yes`)
             .then(response => response.json())
             .then(data => {
               updateWeatherUI(data);
