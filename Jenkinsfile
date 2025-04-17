@@ -47,4 +47,18 @@ pipeline {
       }
     }
   }
+
+  post {
+    success {
+      mail to: 'your_email@gmail.com',
+           subject: "✅ Jenkins Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' Succeeded",
+           body: "Good news!\n\nThe Jenkins build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed successfully.\n\nCheck the build here: ${env.BUILD_URL}"
+    }
+
+    failure {
+      mail to: 'your_email@gmail.com',
+           subject: "❌ Jenkins Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' Failed",
+           body: "Oops!\n\nThe Jenkins build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.\n\nCheck the build here: ${env.BUILD_URL}"
+    }
+  }
 }
