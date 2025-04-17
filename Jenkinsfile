@@ -9,6 +9,7 @@ pipeline {
   stages {
     stage('Clone Repo') {
       steps {
+        sh 'git config --global http.sslVerify false'
         git branch: 'main', url: 'https://github.com/akgithubgre/weathersphere.git'
       }
     }
@@ -44,19 +45,6 @@ pipeline {
           '''
         }
       }
-    }
-  }
-
-  post {
-    success {
-      mail to: 'youremail@example.com',
-           subject: "✅ Build Successful - WeatherSphere",
-           body: "The Docker container was built and deployed successfully."
-    }
-    failure {
-      mail to: 'youremail@example.com',
-           subject: "❌ Build Failed - WeatherSphere",
-           body: "Something went wrong. Please check the Jenkins logs."
     }
   }
 }
