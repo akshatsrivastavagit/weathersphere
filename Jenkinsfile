@@ -34,9 +34,9 @@ pipeline {
         powershell '''
           $tcpConnection = Get-NetTCPConnection -LocalPort 8080
           if ($tcpConnection) {
-            $pid = $tcpConnection.OwningProcess
-            Write-Host "Killing process on port 8080: $pid"
-            Stop-Process -Id $pid -Force
+            $processId = $tcpConnection.OwningProcess
+            Write-Host "Killing process on port 8080: $processId"
+            Stop-Process -Id $processId -Force
           } else {
             Write-Host "Port 8080 is free"
           }
