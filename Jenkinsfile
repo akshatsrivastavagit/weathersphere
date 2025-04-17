@@ -4,6 +4,7 @@ pipeline {
   environment {
     IMAGE_NAME = "weathersphere"
     DOCKER_HUB_USER = "akgreninja"
+    RANDOM_PORT = "8081"  // Random port chosen to avoid conflicts
   }
 
   stages {
@@ -29,24 +30,9 @@ pipeline {
       }
     }
 
-    stage('Free Port 8080') {
-      steps {
-        powershell '''
-          $tcpConnection = Get-NetTCPConnection -LocalPort 8080
-          if ($tcpConnection) {
-            $processId = $tcpConnection.OwningProcess
-            Write-Host "Killing process on port 8080: $processId"
-            Stop-Process -Id $processId -Force
-          } else {
-            Write-Host "Port 8080 is free"
-          }
-        '''
-      }
-    }
-
     stage('Run Docker Container') {
       steps {
-        sh 'docker run -d -p 8080:80 --name $IMAGE_NAME $IMAGE_NAME'
+        sh 'docker run -d -p $RANDOM_PORT:80 --name $IMAGE_NAME $IMAGE_NAME'
       }
     }
 
