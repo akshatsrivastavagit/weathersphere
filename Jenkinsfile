@@ -31,14 +31,14 @@ pipeline {
 
     stage('Free Port 8080') {
       steps {
-        sh '''
-          PID=$(lsof -t -i:8080)
-          if [ -n "$PID" ]; then
-            echo "Killing process on port 8080: $PID"
-            kill -9 $PID
-          else
-            echo "Port 8080 is free"
-          fi
+        powershell '''
+          $pid = Get-NetTCPConnection -LocalPort 8080 | Select-Object -ExpandProperty OwningProcess
+          if ($pid) {
+            Write-Host "Killing process on port 8080: $pid"
+            Stop-Process -Id $pid -Force
+          } else {
+            Write-Host "Port 8080 is free"
+          }
         '''
       }
     }
