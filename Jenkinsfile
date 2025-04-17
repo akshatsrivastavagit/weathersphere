@@ -29,6 +29,20 @@ pipeline {
       }
     }
 
+    stage('Free Port 8080') {
+      steps {
+        sh '''
+          PID=$(lsof -t -i:8080)
+          if [ -n "$PID" ]; then
+            echo "Killing process on port 8080: $PID"
+            kill -9 $PID
+          else
+            echo "Port 8080 is free"
+          fi
+        '''
+      }
+    }
+
     stage('Run Docker Container') {
       steps {
         sh 'docker run -d -p 8080:80 --name $IMAGE_NAME $IMAGE_NAME'
