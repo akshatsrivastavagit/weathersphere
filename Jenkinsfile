@@ -18,7 +18,7 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         sh '''
-          export DOCKER_BUILDKIT=0
+          export DOCKER_BUILDKIT=1
           docker build -t $IMAGE_NAME .
         '''
       }
@@ -26,13 +26,18 @@ pipeline {
 
     stage('Stop Previous Container') {
       steps {
-        sh 'docker stop $IMAGE_NAME || true && docker rm $IMAGE_NAME || true'
+        sh '''
+          docker stop $IMAGE_NAME || true
+          docker rm $IMAGE_NAME || true
+        '''
       }
     }
 
     stage('Run Docker Container') {
       steps {
-        sh 'docker run -d -p $RANDOM_PORT:80 --name $IMAGE_NAME $IMAGE_NAME'
+        sh '''
+          docker run -d -p $RANDOM_PORT:80 --name $IMAGE_NAME $IMAGE_NAME
+        '''
       }
     }
 
@@ -40,7 +45,7 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
           sh '''
-            echo $PASS | docker login -u $USER --password-stdin
+            echo "$PASS" | docker login -u "$USER" --password-stdin
             docker tag $IMAGE_NAME $DOCKER_HUB_USER/$IMAGE_NAME:latest
             docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest
           '''
