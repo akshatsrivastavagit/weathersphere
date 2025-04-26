@@ -45,10 +45,6 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
           sh '''
-            # Allow insecure registry connection (for TLS issue workaround)
-            echo '{ "insecure-registries": ["https://registry-1.docker.io"] }' | sudo tee /etc/docker/daemon.json
-            sudo systemctl restart docker || true
-
             echo "$PASS" | docker login -u "$USER" --password-stdin
             docker tag $IMAGE_NAME $DOCKER_HUB_USER/$IMAGE_NAME:latest
             docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest
