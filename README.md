@@ -1,2 +1,2 @@
 # weathersphere
-updated
+updated Readme file
