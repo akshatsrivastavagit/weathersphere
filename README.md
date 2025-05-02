@@ -1,2 +1,3 @@
 # weathersphere
-need to update the readme
+need to update the readme 
+done
