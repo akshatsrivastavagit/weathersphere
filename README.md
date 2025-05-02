@@ -1,3 +1,3 @@
 # weathersphere
 need to update the readme 
-done
+done amde changes
