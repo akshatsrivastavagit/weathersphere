@@ -1,3 +1,7 @@
+![weathersphereprothumbnail](https://github.com/user-attachments/assets/5d4606a1-d528-46ca-9dfe-28d823dee3e8)
+
+
+
 # WeatherSphere - Weather Application
 
 WeatherSphere is a modern, single-page weather application that provides real-time weather information for any location worldwide. The application features a user-friendly interface with location search functionality and detailed weather forecasts.
