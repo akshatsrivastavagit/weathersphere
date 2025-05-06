@@ -1,3 +1,6 @@
+docker start weathersphere
+
+
 ![weathersphereprothumbnail](https://github.com/user-attachments/assets/5d4606a1-d528-46ca-9dfe-28d823dee3e8)
 
 
